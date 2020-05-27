@@ -1,54 +1,61 @@
-const { query, save } = require("../connection");
+const { queryAsync, saveAsync, prepareQueryAsync } = require("../connection");
 
 module.exports = {
-  get: function (req, res) {
-    query("SELECT * FROM todos", function (error, result, field) {
-      if (error) {
-        res.json(error);
-      } else {
-        res.json(result);
-      }
-    });
+  get: async (req, res) => {
+    try {
+      const result = await queryAsync("SELECT * FROM todos");
+      res.json(result);
+    } catch (error) {
+      res.json(error);
+    }
   },
-  post: function (req, res) {
+  post: async (req, res) => {
     const params = req.body;
-    save("INSERT INTO todos SET ?", params, function (error, result, field) {
-      if (error) {
-        res.json(error);
-      } else {
-        res.json(result);
-      }
-    });
+    try {
+      const result = await saveAsync("INSERT INTO todos SET ?", params);
+      res.json(result);
+    } catch (error) {
+      res.json(error);
+    }
   },
-  put: function (req, res) {
+  put: async (req, res) => {
     const { description, done } = req.body;
     const { id } = req.params;
     const params = [description, done, id];
-    save(
-      "UPDATE todos SET description = ?, done = ? WHERE id=?",
-      params,
-      function (error, result, field) {
-        if (error) {
-          res.json(error);
-        } else {
-          res.json(result);
-        }
-      }
-    );
+    try {
+      const result = await saveAsync(
+        "UPDATE todos SET description = ?, done = ? WHERE id=?",
+        params
+      );
+      res.json(result);
+    } catch (error) {
+      res.json(error);
+    }
   },
-  delete: function (req, res) {
+  delete: async (req, res) => {
     const { id } = req.params;
     const params = [id];
-    save("DELETE FROM todos WHERE id=?", params, function (
-      error,
-      result,
-      field
-    ) {
-      if (error) {
-        res.json(error);
-      } else {
-        res.json(result);
-      }
-    });
+    try {
+      const result = await prepareQueryAsync(
+        "DELETE FROM todos WHERE id=?",
+        params
+      );
+      res.json(result);
+    } catch (error) {
+      res.json(error);
+    }
+  },
+  show: async (req, res) => {
+    const { id } = req.params;
+    const params = [id];
+    try {
+      const result = await prepareQueryAsync(
+        "SELECT * FROM todos WHERE id=?",
+        params
+      );
+      res.json(result && result.length > 0 ? result[0] : {});
+    } catch (error) {
+      res.json(error);
+    }
   },
 };

@@ -8,6 +8,7 @@ const TodoController = require("./controllers/TodoController");
 
 // api get todo ...
 app.get("/todo", TodoController.get);
+app.get("/todo/:id", TodoController.show);
 app.post("/todo", TodoController.post);
 app.put("/todo/:id", TodoController.put);
 app.delete("/todo/:id", TodoController.delete);
