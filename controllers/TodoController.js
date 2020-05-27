@@ -3,7 +3,6 @@ const { query, save } = require("../connection");
 module.exports = {
   get: function (req, res) {
     query("SELECT * FROM todos", function (error, result, field) {
-      console.log(result);
       if (error) {
         res.json(error);
       } else {
@@ -13,9 +12,20 @@ module.exports = {
   },
   post: function (req, res) {
     const params = req.body;
-    console.log(params);
+    save("INSERT INTO todos SET ?", params, function (error, result, field) {
+      if (error) {
+        res.json(error);
+      } else {
+        res.json(result);
+      }
+    });
+  },
+  put: function (req, res) {
+    const { description, done } = req.body;
+    const { id } = req.params;
+    const params = [description, done, id];
     save(
-      "INSERT INTO todos(`description`,`done`) VALUES(?,?)",
+      "UPDATE todos SET description = ?, done = ? WHERE id=?",
       params,
       function (error, result, field) {
         if (error) {
@@ -25,5 +35,20 @@ module.exports = {
         }
       }
     );
+  },
+  delete: function (req, res) {
+    const { id } = req.params;
+    const params = [id];
+    save("DELETE FROM todos WHERE id=?", params, function (
+      error,
+      result,
+      field
+    ) {
+      if (error) {
+        res.json(error);
+      } else {
+        res.json(result);
+      }
+    });
   },
 };
