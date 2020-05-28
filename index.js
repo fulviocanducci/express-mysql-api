@@ -15,7 +15,7 @@ app.delete("/todo/:id", TodoController.delete);
 
 // init service port 3000 ...
 app.get("/", function (req, res) {
-  res.send({ status: true, description: "Servidor Online" });
+  res.send({ status: true, description: "Service Online" });
 });
 app.listen(3000, function () {
   console.log("App de Exemplo escutando na porta 3000!");

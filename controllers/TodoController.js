@@ -1,5 +1,7 @@
 const { queryAsync, saveAsync, prepareQueryAsync } = require("../connection");
 
+require("../utils");
+
 module.exports = {
   get: async (req, res) => {
     try {
@@ -53,7 +55,7 @@ module.exports = {
         "SELECT * FROM todos WHERE id=?",
         params
       );
-      res.json(result && result.length > 0 ? result[0] : {});
+      res.json(result.firstOrDefault());
     } catch (error) {
       res.json(error);
     }
